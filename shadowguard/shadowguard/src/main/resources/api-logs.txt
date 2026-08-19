@@ -1,0 +1,6 @@
+GET /api/users
+GET /api/products
+GET /api/debug/users
+GET /api/test/payment
+GET /api/internal/config
+POST /api/orders

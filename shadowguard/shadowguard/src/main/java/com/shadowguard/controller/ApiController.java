@@ -23,7 +23,6 @@ public class ApiController {
         this.shadowApiDetector = shadowApiDetector;
     }
 
-    // baaki code same rahega
 
     @PostMapping
     public Api saveApi(@RequestBody Api api) {

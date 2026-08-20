@@ -25,6 +25,10 @@ public class ApiService {
         this.apiLogParser = apiLogParser;
     }
 
+    public void deleteAllApis() {
+        apiRepository.deleteAll();
+    }
+
     public Api saveApi(Api api) {
 
         boolean exists = apiRepository.existsByMethodAndEndpoint(

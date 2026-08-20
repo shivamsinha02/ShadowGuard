@@ -52,77 +52,45 @@ public class AiSecurityAnalyzer {
                 api.getRiskReasons()
         );
 
-        String[] models = {
-                "gemini-3.6-flash",
-                "gemini-3.5-flash"
-        };
+        try {
 
-        Exception lastException = null;
-
-        for (String model : models) {
-
-            for (int attempt = 1; attempt <= 2; attempt++) {
-
-                try {
-
-                    System.out.println(
-                            "Gemini request: model=" + model
-                                    + ", attempt=" + attempt
+            GenerateContentResponse response =
+                    geminiClient.models.generateContent(
+                            "gemini-3.6-flash",
+                            prompt,
+                            null
                     );
 
-                    GenerateContentResponse response =
-                            geminiClient.models.generateContent(
-                                    model,
-                                    prompt,
-                                    null
-                            );
+            String result = response.text();
 
-                    String result = response.text();
-
-                    if (result != null && !result.isBlank()) {
-                        return result;
-                    }
-
-                    throw new RuntimeException(
-                            "Gemini returned an empty response"
-                    );
-
-                } catch (Exception e) {
-
-                    lastException = e;
-
-                    System.err.println(
-                            "Gemini request failed: model="
-                                    + model
-                                    + ", attempt="
-                                    + attempt
-                    );
-
-                    System.err.println(
-                            "Error: " + e.getMessage()
-                    );
-
-                    e.printStackTrace();
-
-                    if (attempt < 2) {
-                        try {
-                            Thread.sleep(1500L);
-                        } catch (InterruptedException interruptedException) {
-                            Thread.currentThread().interrupt();
-                            throw new RuntimeException(
-                                    "AI analysis interrupted."
-                            );
-                        }
-                    }
-                }
+            if (result == null || result.isBlank()) {
+                return getUnavailableMessage();
             }
-        }
 
-        throw new RuntimeException(
-                "Gemini AI request failed after all attempts: "
-                        + (lastException != null
-                        ? lastException.getMessage()
-                        : "Unknown error")
-        );
+            return result;
+
+        } catch (Exception e) {
+
+            System.out.println(
+                    "Gemini AI unavailable: " + e.getMessage()
+            );
+
+            // AI failure must never break ShadowGuard scanning
+            return getUnavailableMessage();
+        }
+    }
+
+    private String getUnavailableMessage() {
+
+        return """
+                SUMMARY:
+                AI analysis is temporarily unavailable. The security finding was still detected successfully by ShadowGuard.
+
+                IMPACT:
+                Please review the API risk score, risk level, authentication status, and detected risk reasons shown in the dashboard.
+
+                RECOMMENDATION:
+                Review the identified API manually and ensure appropriate authentication, authorization, and API documentation are in place.
+                """;
     }
 }

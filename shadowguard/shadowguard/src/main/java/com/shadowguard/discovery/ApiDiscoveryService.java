@@ -98,26 +98,26 @@ public class ApiDiscoveryService {
                         endpoint
                 );
 
+        Api api;
+
         if (existingApi.isPresent()) {
 
-            // Already present — don't create duplicate
-            discoveredApis.add(existingApi.get());
+            // Existing API ko update/re-analyze karo
+            api = existingApi.get();
 
-            return;
+        } else {
+
+            // New API
+            api = new Api();
+
+            api.setMethod(method);
+            api.setEndpoint(endpoint);
+
+            api.setSource("DISCOVERED");
+            api.setAuthenticationRequired(false);
         }
 
-        Api api = new Api();
-
-        api.setMethod(method);
-        api.setEndpoint(endpoint);
-
-        // Automatically discovered
-        api.setSource("DISCOVERED");
-
-        // Discovery currently cannot determine authentication.
-        api.setAuthenticationRequired(false);
-
-        // Calculate risk automatically
+        // Risk analysis har scan par dobara chalega
         int riskScore =
                 riskAnalyzer.calculateRiskScore(api);
 

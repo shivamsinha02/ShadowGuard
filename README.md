@@ -32,6 +32,8 @@ User → React Dashboard → Spring Boot REST API → API Discovery → Risk Ana
 
 For individual APIs, Gemini API is used to provide AI-assisted security analysis and recommendations.
 
+             
+             
              COMPANY APPLICATION
                      │
                      ▼
@@ -54,6 +56,9 @@ For individual APIs, Gemini API is used to provide AI-assisted security analysis
                      │
                      ▼
               Security Dashboard
+
+
+              
 
 ## 📊 Dashboard
 

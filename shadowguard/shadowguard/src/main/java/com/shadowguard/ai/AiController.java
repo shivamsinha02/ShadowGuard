@@ -1,12 +1,20 @@
 package com.shadowguard.ai;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.shadowguard.entity.Api;
 import com.shadowguard.repository.ApiRepository;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/ai")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = {
+        "http://localhost:5173",
+        "https://shadowguard-1.onrender.com"
+})
 public class AiController {
 
     private final AiSecurityAnalyzer aiSecurityAnalyzer;

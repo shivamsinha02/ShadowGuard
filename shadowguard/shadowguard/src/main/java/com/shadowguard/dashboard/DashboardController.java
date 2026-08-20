@@ -1,14 +1,21 @@
 package com.shadowguard.dashboard;
 
-import com.shadowguard.entity.Api;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.shadowguard.entity.Api;
+
 @RestController
 @RequestMapping("/api/dashboard")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = {
+        "http://localhost:5173",
+        "https://shadowguard-1.onrender.com"
+})
 public class DashboardController {
 
     private final DashboardService dashboardService;

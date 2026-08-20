@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 
+const API_BASE_URL = "https://shadowguard-sbsv.onrender.com";
+
 function App() {
 
   const [stats, setStats] = useState({
@@ -29,7 +31,7 @@ function App() {
   const fetchDashboardData = () => {
 
     // Fetch statistics
-    fetch("http://localhost:8080/api/dashboard/stats")
+    fetch("https://shadowguard-sbsv.onrender.com/api/dashboard/stats")
       .then(response => response.json())
       .then(data => {
         setStats(data);
@@ -40,7 +42,7 @@ function App() {
 
 
     // Fetch shadow APIs
-    fetch("http://localhost:8080/api/dashboard/shadow")
+    fetch("https://shadowguard-sbsv.onrender.com/api/dashboard/shadow")
       .then(response => response.json())
       .then(data => {
         setShadowApis(data);
@@ -51,7 +53,7 @@ function App() {
 
 
     // Fetch all APIs
-    fetch("http://localhost:8080/api/apis")
+    fetch("https://shadowguard-sbsv.onrender.com/api/apis")
       .then(response => response.json())
       .then(data => {
         setAllApis(data);
@@ -81,7 +83,7 @@ function App() {
 
     setScanning(true);
 
-    fetch("http://localhost:8080/api/discovery/scan")
+    fetch("https://shadowguard-sbsv.onrender.com/api/discovery/scan")
       .then(response => {
 
         if (!response.ok) {
@@ -119,7 +121,7 @@ function App() {
     setAiAnalysis("");
     setLoadingAI(true);
 
-    fetch(`http://localhost:8080/api/ai/analyze/${api.id}`)
+    fetch(`https://shadowguard-sbsv.onrender.com/api/ai/analyze/${api.id}`)
       .then(response => {
 
         if (!response.ok) {

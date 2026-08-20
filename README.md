@@ -32,6 +32,29 @@ User → React Dashboard → Spring Boot REST API → API Discovery → Risk Ana
 
 For individual APIs, Gemini API is used to provide AI-assisted security analysis and recommendations.
 
+             COMPANY APPLICATION
+                     │
+                     ▼
+              ShadowGuard
+                     │
+        ┌────────────┴────────────┐
+        ▼                         ▼
+ OpenAPI / Swagger          Runtime APIs
+ Documentation              Discovery
+        │                         │
+        └────────────┬────────────┘
+                     ▼
+                  Compare
+                     │
+                     ▼
+              Shadow API 🚨
+                     │
+                     ▼
+               Risk Analysis
+                     │
+                     ▼
+              Security Dashboard
+
 ## 📊 Dashboard
 
 The ShadowGuard dashboard provides a centralized view of API security information.

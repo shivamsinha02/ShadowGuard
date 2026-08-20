@@ -56,8 +56,8 @@ public class ApiDiscoveryService {
                     continue;
                 }
 
-                // Don't discover ShadowGuard's own scanner endpoint
-                if (endpoint.startsWith("/api/discovery")) {
+                // Ignore ShadowGuard's own internal APIs
+                if (isInternalShadowGuardApi(endpoint)) {
                     continue;
                 }
 
@@ -87,37 +87,54 @@ public class ApiDiscoveryService {
         return discoveredApis;
     }
 
+    /**
+     * Checks whether an endpoint belongs to ShadowGuard itself.
+     * These endpoints should not be treated as Shadow APIs.
+     */
+    private boolean isInternalShadowGuardApi(String endpoint) {
+
+        return endpoint.startsWith("/api/discovery")
+                || endpoint.startsWith("/api/apis")
+                || endpoint.startsWith("/api/dashboard")
+                || endpoint.startsWith("/api/projects")
+                || endpoint.startsWith("/api/ai");
+    }
+
     private void saveApi(
             String method,
             String endpoint,
             List<Api> discoveredApis) {
 
+        // IMPORTANT:
+        // Search only for an existing DISCOVERED API.
+        // A DOCUMENTED API with the same method + endpoint
+        // must remain a separate record.
         var existingApi =
-                apiRepository.findByMethodAndEndpoint(
+                apiRepository.findByMethodAndEndpointAndSource(
                         method,
-                        endpoint
+                        endpoint,
+                        "DISCOVERED"
                 );
 
         Api api;
 
         if (existingApi.isPresent()) {
 
-            // Existing API ko update/re-analyze karo
+            // Existing discovered API → re-analyze it
             api = existingApi.get();
 
         } else {
 
-            // New API
+            // New discovered API
             api = new Api();
 
             api.setMethod(method);
             api.setEndpoint(endpoint);
-
             api.setSource("DISCOVERED");
             api.setAuthenticationRequired(false);
         }
 
-        // Risk analysis har scan par dobara chalega
+        // Recalculate risk on every scan
         int riskScore =
                 riskAnalyzer.calculateRiskScore(api);
 

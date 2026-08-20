@@ -13,5 +13,17 @@ public interface ApiRepository extends JpaRepository<Api, Long> {
 
     Optional<Api> findByMethodAndEndpoint(String method, String endpoint);
 
+    boolean existsByMethodAndEndpointAndSource(
+            String method,
+            String endpoint,
+            String source
+    );
+
+    Optional<Api> findByMethodAndEndpointAndSource(
+            String method,
+            String endpoint,
+            String source
+    );
+
     List<Api> findByRiskLevelIn(List<String> riskLevels);
 }

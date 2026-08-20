@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import "./App.css";
 
 const API_BASE_URL = "https://shadowguard-sbsv.onrender.com";
@@ -23,6 +23,9 @@ function App() {
 
   const [scanning, setScanning] = useState(false);
 
+  // Reference for AI Analysis section
+  const aiAnalysisRef = useRef(null);
+
 
   // =========================
   // FETCH DASHBOARD DATA
@@ -31,7 +34,7 @@ function App() {
   const fetchDashboardData = () => {
 
     // Fetch statistics
-    fetch("https://shadowguard-sbsv.onrender.com/api/dashboard/stats")
+    fetch(`${API_BASE_URL}/api/dashboard/stats`)
       .then(response => response.json())
       .then(data => {
         setStats(data);
@@ -42,7 +45,7 @@ function App() {
 
 
     // Fetch shadow APIs
-    fetch("https://shadowguard-sbsv.onrender.com/api/dashboard/shadow")
+    fetch(`${API_BASE_URL}/api/dashboard/shadow`)
       .then(response => response.json())
       .then(data => {
         setShadowApis(data);
@@ -53,7 +56,7 @@ function App() {
 
 
     // Fetch all APIs
-    fetch("https://shadowguard-sbsv.onrender.com/api/apis")
+    fetch(`${API_BASE_URL}/api/apis`)
       .then(response => response.json())
       .then(data => {
         setAllApis(data);
@@ -76,6 +79,27 @@ function App() {
 
 
   // =========================
+  // AUTO SCROLL TO AI ANALYSIS
+  // =========================
+
+  useEffect(() => {
+
+    if (selectedApi && !loadingAI && aiAnalysisRef.current) {
+
+      setTimeout(() => {
+
+        aiAnalysisRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+
+      }, 150);
+    }
+
+  }, [loadingAI, selectedApi]);
+
+
+  // =========================
   // SCAN APIs
   // =========================
 
@@ -83,7 +107,7 @@ function App() {
 
     setScanning(true);
 
-    fetch("https://shadowguard-sbsv.onrender.com/api/discovery/scan")
+    fetch(`${API_BASE_URL}/api/discovery/scan`)
       .then(response => {
 
         if (!response.ok) {
@@ -121,7 +145,7 @@ function App() {
     setAiAnalysis("");
     setLoadingAI(true);
 
-    fetch(`https://shadowguard-sbsv.onrender.com/api/ai/analyze/${api.id}`)
+    fetch(`${API_BASE_URL}/api/ai/analyze/${api.id}`)
       .then(response => {
 
         if (!response.ok) {
@@ -418,7 +442,10 @@ function App() {
 
         {selectedApi && (
 
-          <section className="ai-section">
+          <section
+            className="ai-section"
+            ref={aiAnalysisRef}
+          >
 
             <h2>
               AI Security Analysis
@@ -535,6 +562,7 @@ function App() {
                       </p>
 
                     </div>
+
 
                   </div>
 

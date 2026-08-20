@@ -13,6 +13,8 @@ import com.shadowguard.analyzer.ShadowApiDetector;
 import com.shadowguard.entity.Api;
 import com.shadowguard.service.ApiService;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
+
 @RestController
 @RequestMapping("/api/apis")
 @CrossOrigin(origins = {
@@ -66,4 +68,11 @@ public class ApiController {
 
         return "API logs imported successfully";
     }
+
+    @DeleteMapping("/reset")
+    public String resetApis() {
+        apiService.deleteAllApis();
+        return "API data reset successfully";
+    }
+
 }

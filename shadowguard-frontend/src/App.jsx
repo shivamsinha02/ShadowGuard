@@ -79,24 +79,44 @@ function App() {
 
 
   // =========================
-  // AUTO SCROLL TO AI ANALYSIS
-  // =========================
+// AUTO SCROLL TO AI ANALYSIS
+// =========================
 
-  useEffect(() => {
+useEffect(() => {
 
-    if (selectedApi && !loadingAI && aiAnalysisRef.current) {
+  if (!selectedApi || loadingAI) {
+    return;
+  }
 
-      setTimeout(() => {
+  const scrollToAI = () => {
 
-        aiAnalysisRef.current.scrollIntoView({
-          behavior: "smooth",
-          block: "start"
-        });
-
-      }, 150);
+    if (!aiAnalysisRef.current) {
+      return;
     }
 
-  }, [loadingAI, selectedApi]);
+    const element = aiAnalysisRef.current;
+
+    const elementPosition =
+      element.getBoundingClientRect().top + window.scrollY;
+
+    const offset = 40;
+
+    window.scrollTo({
+      top: elementPosition - offset,
+      behavior: "smooth"
+    });
+  };
+
+  // Wait until React has completely rendered AI analysis
+  const timer = setTimeout(() => {
+    requestAnimationFrame(() => {
+      scrollToAI();
+    });
+  }, 300);
+
+  return () => clearTimeout(timer);
+
+}, [selectedApi, loadingAI, aiAnalysis]);
 
 
   // =========================
@@ -135,45 +155,45 @@ function App() {
   };
 
 
-  // =========================
-  // AI SECURITY ANALYSIS
-  // =========================
+// =========================
+// AI SECURITY ANALYSIS
+// =========================
 
-  const analyzeWithAI = (api) => {
+const analyzeWithAI = (api) => {
 
-    setSelectedApi(api);
-    setAiAnalysis("");
-    setLoadingAI(true);
+  setSelectedApi(api);
+  setAiAnalysis("");
+  setLoadingAI(true);
 
-    fetch(`${API_BASE_URL}/api/ai/analyze/${api.id}`)
-      .then(response => {
+  fetch(`${API_BASE_URL}/api/ai/analyze/${api.id}`)
+    .then(response => {
 
-        if (!response.ok) {
-          throw new Error("AI analysis failed");
-        }
+      if (!response.ok) {
+        throw new Error("AI analysis failed");
+      }
 
-        return response.text();
-      })
-      .then(data => {
+      return response.text();
+    })
+    .then(data => {
 
-        setAiAnalysis(data);
+      setAiAnalysis(data);
 
-      })
-      .catch(error => {
+    })
+    .catch(error => {
 
-        console.error("AI analysis error:", error);
+      console.error("AI analysis error:", error);
 
-        setAiAnalysis(
-          "AI analysis is temporarily unavailable. Please try again."
-        );
+      setAiAnalysis(
+        "AI analysis is temporarily unavailable. Please try again."
+      );
 
-      })
-      .finally(() => {
+    })
+    .finally(() => {
 
-        setLoadingAI(false);
+      setLoadingAI(false);
 
-      });
-  };
+    });
+};
 
 
   // =========================

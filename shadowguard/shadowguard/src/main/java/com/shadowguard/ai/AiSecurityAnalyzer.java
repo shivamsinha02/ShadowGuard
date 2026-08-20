@@ -52,45 +52,77 @@ public class AiSecurityAnalyzer {
                 api.getRiskReasons()
         );
 
-        int maxRetries = 3;
+        String[] models = {
+                "gemini-3.6-flash",
+                "gemini-3.5-flash"
+        };
 
-        for (int attempt = 1; attempt <= maxRetries; attempt++) {
+        Exception lastException = null;
 
-            try {
+        for (String model : models) {
 
-                GenerateContentResponse response =
-                        geminiClient.models.generateContent(
-                                "gemini-3.6-flash",
-                                prompt,
-                                null
-                        );
-
-                return response.text();
-
-            } catch (Exception e) {
-
-                System.out.println(
-                        "Gemini AI request failed. Attempt "
-                                + attempt + "/" + maxRetries
-                );
-
-                if (attempt == maxRetries) {
-                    throw new RuntimeException(
-                            "Gemini AI is temporarily unavailable. Please try again later."
-                    );
-                }
+            for (int attempt = 1; attempt <= 2; attempt++) {
 
                 try {
-                    Thread.sleep(2000L * attempt);
-                } catch (InterruptedException interruptedException) {
-                    Thread.currentThread().interrupt();
-                    throw new RuntimeException(
-                            "AI analysis interrupted."
+
+                    System.out.println(
+                            "Gemini request: model=" + model
+                                    + ", attempt=" + attempt
                     );
+
+                    GenerateContentResponse response =
+                            geminiClient.models.generateContent(
+                                    model,
+                                    prompt,
+                                    null
+                            );
+
+                    String result = response.text();
+
+                    if (result != null && !result.isBlank()) {
+                        return result;
+                    }
+
+                    throw new RuntimeException(
+                            "Gemini returned an empty response"
+                    );
+
+                } catch (Exception e) {
+
+                    lastException = e;
+
+                    System.err.println(
+                            "Gemini request failed: model="
+                                    + model
+                                    + ", attempt="
+                                    + attempt
+                    );
+
+                    System.err.println(
+                            "Error: " + e.getMessage()
+                    );
+
+                    e.printStackTrace();
+
+                    if (attempt < 2) {
+                        try {
+                            Thread.sleep(1500L);
+                        } catch (InterruptedException interruptedException) {
+                            Thread.currentThread().interrupt();
+                            throw new RuntimeException(
+                                    "AI analysis interrupted."
+                            );
+                        }
+                    }
                 }
             }
         }
 
-        throw new RuntimeException("AI analysis failed.");
+        throw new RuntimeException(
+                "Gemini AI request failed after all attempts: "
+                        + (lastException != null
+                        ? lastException.getMessage()
+                        : "Unknown error")
+        );
     }
 }

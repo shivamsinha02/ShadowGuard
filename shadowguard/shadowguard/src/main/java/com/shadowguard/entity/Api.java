@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Table(
         name = "apis",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"method", "endpoint"})
+                @UniqueConstraint(columnNames = {"method", "endpoint", "source"})
         }
 )
 public class Api {

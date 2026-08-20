@@ -59,10 +59,12 @@ public class ApiService {
 
         for (Api api : apis) {
 
-            boolean exists = apiRepository.existsByMethodAndEndpoint(
-                    api.getMethod(),
-                    api.getEndpoint()
-            );
+            boolean exists =
+                    apiRepository.existsByMethodAndEndpointAndSource(
+                            api.getMethod(),
+                            api.getEndpoint(),
+                            api.getSource()
+                    );
 
             if (!exists) {
                 apiRepository.save(api);

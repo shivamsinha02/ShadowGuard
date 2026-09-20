@@ -1,5 +1,0 @@
-install:
-  - mvn -f **/pom.xml install -DskipTests
-
-jdk:
-  - openjdk17

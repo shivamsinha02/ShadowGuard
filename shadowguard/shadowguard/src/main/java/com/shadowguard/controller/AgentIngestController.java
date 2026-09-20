@@ -3,6 +3,7 @@ package com.shadowguard.controller;
 import com.shadowguard.discovery.ApiDiscoveryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +20,8 @@ public class AgentIngestController {
     }
 
     // 1. Data Transfer Object (DTO) structure for the incoming request payload
-    public record AgentRegistrationDto(String applicationName, List<String> routes) {}
+    public record AgentRegistrationDto(String applicationName, List<String> routes) {
+    }
 
     @PostMapping("/register")
     public ResponseEntity<Map<String, String>> receiveRoutesFromAgent(@RequestBody AgentRegistrationDto registration) {

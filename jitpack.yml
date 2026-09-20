@@ -1,0 +1,5 @@
+install:
+  - cd shadowguard && mvn install -DskipTests
+
+jdk:
+  - openjdk17
